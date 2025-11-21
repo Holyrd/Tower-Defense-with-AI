@@ -11,9 +11,11 @@ public class EnemyMovement : MonoBehaviour
 	private Transform target;
 	private int targetIndex = 0;
 
+	private float baseSpeed;
 
 	private void Start()
 	{
+		baseSpeed = moveSpeed;
 		this.transform.position = LevelManager.main.startPoint.position;
 		target = LevelManager.main.path[targetIndex];
 
@@ -26,6 +28,7 @@ public class EnemyMovement : MonoBehaviour
 			targetIndex++;
 			if (targetIndex == LevelManager.main.path.Length)
 			{
+				EnemySpawner.OnEnemyDestroy.Invoke();
 				Destroy(gameObject);
 				return;
 			}
@@ -41,5 +44,15 @@ public class EnemyMovement : MonoBehaviour
 		Vector2 direction = (target.position - transform.position).normalized;
 
 		rb.linearVelocity = direction * moveSpeed;
+	}
+
+	public void ChangeSpeed(float updatedSpeed)
+	{
+		moveSpeed = updatedSpeed;
+	}
+
+	public void ResetSpeed()
+	{
+		moveSpeed = baseSpeed;
 	}
 }
