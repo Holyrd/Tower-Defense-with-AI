@@ -90,6 +90,21 @@ public class EnemySpawner : MonoBehaviour
 		yield return new WaitForSeconds(timeBeetwenWaves);
 
 		currentWave = LevelManager.main.wave;
+
+		// --- Ћќ√» ј ќЅЌќ¬Ћ≈Ќ»я ћј–Ў–”“ј ---
+		if (currentWave >= 5)
+		{
+			// 1. ¬ключаем режим опасности
+			Pathfinder.main.useDangerLogic = true;
+
+			// 2. —начала обновл€ем карту весов (считаем штрафы вокруг башен)
+			Pathfinder.main.UpdateDangerMap();
+
+			// 3. » только “≈ѕ≈–№ перестраиваем путь и рисуем линию
+			Pathfinder.main.RecalculatePath();
+		}
+		// -----------------------------------
+
 		isSpawning = true;
 		enemysLeftToSpawn = IncreasLevelDiff();
 		eps = IncreasSpeedDiff();

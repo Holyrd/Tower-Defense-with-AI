@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8439100743150643455}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RotationPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 2750434920890954655}
   - component: {fileID: 4308291019648984664}
   - component: {fileID: 6769093997686596362}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4751715378358378397}
   - component: {fileID: 5203545414290915002}
-  m_Layer: 0
+  - component: {fileID: 7002086438344346412}
+  m_Layer: 3
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,6 +177,52 @@ MonoBehaviour:
   rotationSpeed: 200
   bps: 1
   upgradeCost: 100
+--- !u!61 &7002086438344346412
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5359365068116436566}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &5716752975057518336
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +236,7 @@ GameObject:
   - component: {fileID: 2642420965889372868}
   - component: {fileID: 5536713416153082793}
   - component: {fileID: 8375688369869618119}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Upgrade UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -302,7 +349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6784980296699116336}
   - component: {fileID: 3683562740215257751}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Turrerts (1)_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,7 +441,7 @@ GameObject:
   - component: {fileID: 9166334820393284129}
   - component: {fileID: 2333615968725860628}
   - component: {fileID: 6886758502666345335}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Upgrade button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -513,7 +560,7 @@ GameObject:
   - component: {fileID: 344777335636679013}
   - component: {fileID: 6547709028342415094}
   - component: {fileID: 5032186154826064523}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Upgrade Cost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5125862859861494871}
   - component: {fileID: 8377936087741038635}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Turrerts (1)_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -737,7 +784,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6709971685750005349}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
