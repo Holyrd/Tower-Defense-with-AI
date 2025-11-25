@@ -18,7 +18,6 @@ public class Plot : MonoBehaviour
 
 	private void OnMouseEnter()
 	{
-		// ≈сли башн€ уже стоит, ничего не делаем (оставл€ем прозрачным)
 		if (towerObj != null) return;
 
 		sr.color = hoverColor;
@@ -26,7 +25,6 @@ public class Plot : MonoBehaviour
 
 	private void OnMouseExit()
 	{
-		// ≈сли башн€ стоит, не возвращаем старый цвет (пусть остаетс€ прозрачным)
 		if (towerObj != null) return;
 
 		sr.color = startColor;

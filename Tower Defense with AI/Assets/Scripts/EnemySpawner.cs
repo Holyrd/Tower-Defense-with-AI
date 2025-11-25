@@ -11,9 +11,11 @@ public class EnemySpawner : MonoBehaviour
 	[SerializeField] private int baseEnemysCount = 8;
 	[SerializeField] private float enemysPerSecond = 2f;
 	[SerializeField] private float diffPerLevel = 0.75f;
-	[SerializeField] private int currentLevel = 1;
+
 	[SerializeField] private int timeBeetwenWaves = 5;
 	[SerializeField] private float epsCap = 15f;
+
+	[SerializeField] private int maxWaves = 20;
 
 	[Header("Events")]
 	[SerializeField] public static UnityEvent OnEnemyDestroy = new UnityEvent();
@@ -23,6 +25,8 @@ public class EnemySpawner : MonoBehaviour
 	private int enemysLeftToSpawn;
 	private int enemysAlive;
 	private float eps; //enemyes per second
+	private int currentWave;
+
 
 	private void Awake()
 	{
@@ -40,7 +44,7 @@ public class EnemySpawner : MonoBehaviour
 
 		timeFromLastSpawn += Time.deltaTime;
 
-		if (timeFromLastSpawn >= (1f/eps) && enemysLeftToSpawn > 0)
+		if (timeFromLastSpawn >= (1f / eps) && enemysLeftToSpawn > 0)
 		{
 			SpawnEnemys();
 			enemysLeftToSpawn--;
@@ -68,16 +72,24 @@ public class EnemySpawner : MonoBehaviour
 
 	private void EndWave()
 	{
-		currentLevel++;
+		LevelManager.main.SetWave(++currentWave);
 		isSpawning = false;
 		timeFromLastSpawn = 0f;
-		StartCoroutine(StartWave());
+		if (currentWave == maxWaves)
+		{
+			WinLosePanel.main.EndGame(true);
+		}
+		else
+		{
+			StartCoroutine(StartWave());
+		}
 	}
 
 	private IEnumerator StartWave()
 	{
 		yield return new WaitForSeconds(timeBeetwenWaves);
 
+		currentWave = LevelManager.main.wave;
 		isSpawning = true;
 		enemysLeftToSpawn = IncreasLevelDiff();
 		eps = IncreasSpeedDiff();
@@ -85,11 +97,11 @@ public class EnemySpawner : MonoBehaviour
 
 	private int IncreasLevelDiff()
 	{
-		return Mathf.RoundToInt(baseEnemysCount * Mathf.Pow(currentLevel, diffPerLevel));
+		return Mathf.RoundToInt(baseEnemysCount * Mathf.Pow(currentWave, diffPerLevel));
 	}
 
 	private float IncreasSpeedDiff()
 	{
-		return Mathf.Clamp(enemysPerSecond * Mathf.Pow(currentLevel, diffPerLevel), 0f, epsCap);
+		return Mathf.Clamp(enemysPerSecond * Mathf.Pow(currentWave, diffPerLevel), 0f, epsCap);
 	}
 }

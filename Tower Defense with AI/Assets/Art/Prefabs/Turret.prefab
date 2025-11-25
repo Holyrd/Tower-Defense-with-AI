@@ -64,6 +64,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5966123957085326135}
+  - {fileID: 344777335636679013}
   m_Father: {fileID: 243734187157778830}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -164,6 +165,7 @@ MonoBehaviour:
   firePoint: {fileID: 6709971685750005349}
   upgradeUI: {fileID: 5716752975057518336}
   upgradeButton: {fileID: 6886758502666345335}
+  upgradeCostUI: {fileID: 5032186154826064523}
   turretSprites:
   - {fileID: 3683562740215257751}
   - {fileID: 8377936087741038635}
@@ -211,8 +213,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1080, y: 720}
+  m_AnchoredPosition: {x: -0.004, y: 0.0231}
+  m_SizeDelta: {x: 779.3296, y: 730.1597}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &5618655109691052621
 Canvas:
@@ -410,13 +412,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 344777335636679013}
+  m_Children: []
   m_Father: {fileID: 2750434920890954655}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 115.08}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9166334820393284129
@@ -447,8 +448,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -7858885455770454150, guid: 775af96eab08a224cbbbd84cc2a49428, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -513,7 +514,7 @@ GameObject:
   - component: {fileID: 6547709028342415094}
   - component: {fileID: 5032186154826064523}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Upgrade Cost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -531,12 +532,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5966123957085326135}
+  m_Father: {fileID: 2750434920890954655}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -247.44998}
+  m_SizeDelta: {x: 0, y: -494.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6547709028342415094
 CanvasRenderer:
@@ -566,17 +567,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: UPGRADE
+  m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 59dd3e94c29355b4795f90397826677e, type: 2}
+  m_sharedMaterial: {fileID: -6524614441658278512, guid: 59dd3e94c29355b4795f90397826677e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -593,8 +594,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 81.8
-  m_fontSizeBase: 81.8
+  m_fontSize: 278.35
+  m_fontSizeBase: 278.35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

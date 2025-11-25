@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,12 +12,11 @@ public class Turret : MonoBehaviour
 	[SerializeField] private Transform firePoint;
 	[SerializeField] private GameObject upgradeUI;
 	[SerializeField] private Button upgradeButton;
+	[SerializeField] TextMeshProUGUI upgradeCostUI;
 
-	// --- днаюбкемн ---
 	[Header("Visuals")]
 	[SerializeField] private SpriteRenderer[] turretSprites;
 	[SerializeField] private Sprite[] newTurretSprites;
-
 
 	[Header("Properties")]
 	[SerializeField] private float targetingRange = 3f;
@@ -94,6 +94,7 @@ public class Turret : MonoBehaviour
 	public void OpenUpgradeUI()
 	{
 		upgradeUI.SetActive(true);
+		upgradeCostUI.text = upgradeCost.ToString();
 	}
 
 	public void CloseUpgradeUI()

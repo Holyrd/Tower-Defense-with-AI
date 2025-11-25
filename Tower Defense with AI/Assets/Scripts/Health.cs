@@ -20,4 +20,9 @@ public class Health : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public int GiveDamage()
+    {
+        return hitPoint;
+    }
 }
