@@ -67,10 +67,6 @@ public class Plot : MonoBehaviour
 
 		if (towerObj != null)
 		{
-			if (TowerHasUpgrade)
-			{
-				turret.OpenUpgradeUI();
-			}
 			return;
 		}
 
@@ -92,7 +88,6 @@ public class Plot : MonoBehaviour
 		if (towerObj.GetComponent<Turret>() != null)
 		{
 			turret = towerObj.GetComponent<Turret>();
-			TowerHasUpgrade = true;
 		}
 	}
 }

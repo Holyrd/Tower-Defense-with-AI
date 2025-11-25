@@ -91,6 +91,16 @@ public class Turret : MonoBehaviour
 		rotationPoint.rotation = Quaternion.RotateTowards(rotationPoint.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 	}
 
+	private void OnMouseDown()
+	{
+		// 1. Проверка на UI (чтобы не кликать сквозь кнопки)
+		if (UIManager.main.IsHoveringUI()) return;
+
+		// 2. Просто открываем меню апгрейда этой башни
+		// (Этот метод у тебя уже должен быть внутри Turret, судя по вызову из Plot)
+		OpenUpgradeUI();
+	}
+
 	public void OpenUpgradeUI()
 	{
 		upgradeUI.SetActive(true);
