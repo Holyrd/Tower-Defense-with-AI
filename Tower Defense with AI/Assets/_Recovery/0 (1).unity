@@ -2446,7 +2446,7 @@ Transform:
   m_GameObject: {fileID: 214746138}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.5, y: 1, z: 0}
+  m_LocalPosition: {x: -8.5, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18085,9 +18085,6 @@ GameObject:
   - component: {fileID: 2050933252}
   - component: {fileID: 2050933253}
   - component: {fileID: 2050933254}
-  - component: {fileID: 2050933255}
-  - component: {fileID: 2050933257}
-  - component: {fileID: 2050933256}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -18108,6 +18105,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   startPoint: {fileID: 214746139}
+  path:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 1533354}
 --- !u!4 &2050933250
 Transform:
   m_ObjectHideFlags: 0
@@ -18135,7 +18148,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2748b2a4a85e9418d7deda77582e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  enemysPrefabs:
+  - {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+  - {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+  - {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+  baseEnemysCount: 8
+  enemysPerSecond: 2
+  diffPerLevel: 0.75
   timeBeetwenWaves: 1
+  epsCap: 15
   maxWaves: 20
 --- !u!114 &2050933252
 MonoBehaviour:
@@ -18184,55 +18205,6 @@ MonoBehaviour:
   resultImage: {fileID: 293969383}
   winImg: {fileID: 1850670332451924933, guid: e28b3a1ac1ec30f4da6168f34792e53a, type: 3}
   loseImg: {fileID: 781296824588380979, guid: e28b3a1ac1ec30f4da6168f34792e53a, type: 3}
---- !u!114 &2050933255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050933248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1780e8e9479cb294cb36576ee8c83f9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatsManager
-  currentStats:
-    enemiesKilled: 0
-    totalDamageDealt: 0
-    moneyEarned: 0
-    moneySpent: 0
-    towersBuilt: 0
-    wavesSurvived: 0
---- !u!114 &2050933256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050933248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f2755d1fd6c9d04089c169e45d17bf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DynamicDifficultyManager
-  baseWaves: {fileID: 11400000, guid: 171ec69d7b2aa5c40a9ca33752f66838, type: 2}
-  rules: {fileID: 11400000, guid: b13848df8047d4441a95591927e9d087, type: 2}
-  currentProfile: {fileID: 11400000, guid: 7e26156358f8c364cbbbf38623c1d3c3, type: 2}
-  currentCountMult: 1
-  currentRateMult: 1
-  currentGoldMult: 1
---- !u!114 &2050933257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050933248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c217d2ff38d79494ea2498aaa87abe04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PerformanceMonitor
 --- !u!4 &2053898335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2609493869986708200, guid: ab8d01bc4c97e8740a189a64eec3a6a5, type: 3}

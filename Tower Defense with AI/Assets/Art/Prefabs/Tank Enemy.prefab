@@ -171,7 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   hitPoint: 4
-  currencyForEnemy: 50
+  maxHitPoint: 2
+  currencyForEnemy: 15
 --- !u!114 &4478613436514743798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,8 +264,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 702555159
-  m_SortingLayer: 1
+  m_SortingLayerID: 1249893843
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 9139582426635047999, guid: 242c56768599d774bbae6afb45f4abd9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

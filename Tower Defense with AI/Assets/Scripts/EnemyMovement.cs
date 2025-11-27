@@ -20,14 +20,11 @@ public class EnemyMovement : MonoBehaviour
 	{
 		baseSpeed = moveSpeed;
 
-		// Получаем точку конца (последняя точка старого пути)
-		// ВНИМАНИЕ: Убедись, что в LevelManager.main.path есть хотя бы одна точка
-		if (LevelManager.main.path.Length > 0)
-			endPoint = LevelManager.main.path[LevelManager.main.path.Length - 1].position;
-		else
-			endPoint = Vector3.zero; // Заглушка
+		// 1. Ставим врага точно в точку старта
+		if (Pathfinder.main.startPoint != null)
+			this.transform.position = Pathfinder.main.startPoint.position;
 
-		// ЗАПРАШИВАЕМ ПУТЬ
+		// 2. Получаем уже готовый путь
 		GetCachedPath();
 	}
 

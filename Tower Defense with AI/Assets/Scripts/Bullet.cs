@@ -12,6 +12,7 @@ public class Bullet : MonoBehaviour
 	private Transform target;
 	private float liveTime = 5f;
 	private float currentLiveTime;
+	private bool _hasHit = false;
 
 	public void SetTarget(Transform _target)
 	{
@@ -40,7 +41,17 @@ public class Bullet : MonoBehaviour
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		collision.gameObject.GetComponent<Health>().TakeDamage(damage);
+		if (_hasHit) return;
+
+		// —разу ставим флаг, блокиру€ последующие вызовы
+		_hasHit = true;
+
+		// ’орошей практикой считаетс€ проверка на null (на случай если у объекта нет скрипта Health)
+		if (collision.gameObject.TryGetComponent<Health>(out Health health))
+		{
+			health.TakeDamage(damage);
+		}
+
 		Destroy(gameObject);
 	}
 }

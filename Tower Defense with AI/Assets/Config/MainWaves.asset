@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a962db8a7f3933a45a305e34bdd9511e, type: 3}
+  m_Name: MainWaves
+  m_EditorClassIdentifier: Assembly-CSharp::WaveConfigSO
+  waves:
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 5
+    spawnRate: 1
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 10
+    spawnRate: 1
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 10
+    spawnRate: 2
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 20
+    spawnRate: 2
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 10
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+      count: 5
+    spawnRate: 2
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 12
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+      count: 8
+    spawnRate: 2
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 25
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+      count: 15
+    spawnRate: 2
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 25
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+      count: 10
+    spawnRate: 3
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 50
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+      count: 25
+    spawnRate: 3
+  - enemyGroups:
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 66c92279e6756d94db9a2d3bc7f43872, type: 3}
+      count: 40
+    - enemyPrefab: {fileID: 3055159557670328427, guid: 8a9657cf52b4eca44b48e7814c9d8699, type: 3}
+      count: 30
+    spawnRate: 4

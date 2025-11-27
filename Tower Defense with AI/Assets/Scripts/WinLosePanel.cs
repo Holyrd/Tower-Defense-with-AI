@@ -29,6 +29,10 @@ public class WinLosePanel : MonoBehaviour
 	{
 		panelObject.SetActive(true);
 
+		var stats = StatsManager.main.currentStats;
+
+		Debug.Log($"Игра окончена! Убито: {stats.enemiesKilled}, Урон: {stats.totalDamageDealt}");
+
 		if (isWin)
 		{
 			resultImage.sprite = winImg;

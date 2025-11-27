@@ -4,24 +4,53 @@ public class Health : MonoBehaviour
 {
     [Header("Attributes")]
     [SerializeField] private int hitPoint = 2;
+	[SerializeField] private int maxHitPoint = 2;
     [SerializeField] private int currencyForEnemy = 25;
 
     private bool isDestroyd = false;
 
-    public void TakeDamage(int damage)
-    {
-        hitPoint -= damage;
+	private void Start()
+	{
+		maxHitPoint = hitPoint; // Запоминаем максимум при старте
+	}
 
-        if(hitPoint <= 0 && !isDestroyd)
-        {
-            EnemySpawner.OnEnemyDestroy.Invoke();
-            LevelManager.main.IncreasCurrency(currencyForEnemy);
-            isDestroyd = true;
-            Destroy(gameObject);
-        }
-    }
+	// Метод для Менеджера Сложности
+	public int GetMaxHealth()
+	{
+		// Если мы вызываем это из префаба (где Start еще не был), вернем hitPoint
+		// Если из живого врага - вернем maxHitPoint
+		return maxHitPoint > 0 ? maxHitPoint : hitPoint;
+	}
 
-    public int GiveDamage()
+
+	public void TakeDamage(int damage)
+	{
+		if (PerformanceMonitor.instance)
+			PerformanceMonitor.instance.RegisterDamage(damage);
+
+		hitPoint -= damage;
+
+		// АГРЕГАЦИЯ: Записываем нанесенный урон
+		StatsManager.main.TrackDamage(damage);
+
+		if (hitPoint <= 0 && !isDestroyd)
+		{
+			EnemySpawner.OnEnemyDestroy.Invoke();
+
+			// ТУТ ЖЕ МОЖНО ВЫДАТЬ ЗОЛОТО С УЧЕТОМ БОНУСА
+			int gold = Mathf.RoundToInt(currencyForEnemy * DynamicDifficultyManager.instance.currentGoldMult);
+			LevelManager.main.IncreasCurrency(gold);
+
+			// АГРЕГАЦИЯ: Записываем убийство и заработок
+			StatsManager.main.TrackEnemyKill();
+			StatsManager.main.TrackMoneyEarned(gold);
+
+			isDestroyd = true;
+			Destroy(gameObject);
+		}
+	}
+
+	public int GiveDamage()
     {
         return hitPoint;
     }

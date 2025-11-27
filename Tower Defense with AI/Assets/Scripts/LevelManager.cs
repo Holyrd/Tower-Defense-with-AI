@@ -8,9 +8,6 @@ public class LevelManager : MonoBehaviour
 	public int wave { get; private set; }
 	public int lives { get; private set; }
 	public Transform startPoint;
-	public Transform[] path;
-
-
 
 	private void Awake()
 	{
@@ -19,9 +16,9 @@ public class LevelManager : MonoBehaviour
 
 	private void Start()
 	{
-		currency = 1000;
+		currency = 200;
 		wave = 1;
-		lives = 10000;
+		lives = 100;
 	}
 
 	public void IncreasCurrency(int amount)

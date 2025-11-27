@@ -9,7 +9,6 @@ public class Plot : MonoBehaviour
 	public GameObject towerObj;
 	public Turret turret;
 	private Color startColor;
-	private bool TowerHasUpgrade = false;
 	private Collider2D plotCollider; // —сылка на коллайдер
 
 	private void Awake() // »спользуем Awake чтобы найти коллайдер
@@ -79,6 +78,9 @@ public class Plot : MonoBehaviour
 		}
 
 		LevelManager.main.SpentCurrency(towerToBuild.cost);
+
+		StatsManager.main.TrackMoneySpent(towerToBuild.cost);
+		StatsManager.main.TrackTowerBuilt();
 
 		towerObj = Instantiate(towerToBuild.prefab, transform.position, Quaternion.identity);
 		sr.color = Color.clear;
