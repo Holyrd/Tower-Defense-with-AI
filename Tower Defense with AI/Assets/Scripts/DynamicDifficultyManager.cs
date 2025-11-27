@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq; // Добавлено для удобной работы со списками
 
 public class DynamicDifficultyManager : MonoBehaviour
 {
@@ -26,26 +27,61 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return baseWaves.waves[safeIndex];
 	}
 
+	// ИСПРАВЛЕНО: Теперь берет врага из групп, так как массива possibleEnemies больше нет
+	public GameObject GetEnemyPrefab(int waveIndex)
+	{
+		var data = GetSafeWaveData(waveIndex);
+		if (data.enemyGroups == null || data.enemyGroups.Count == 0) return null;
+
+		// Берем случайную группу и возвращаем её префаб
+		var randomGroup = data.enemyGroups[Random.Range(0, data.enemyGroups.Count)];
+		return randomGroup.enemyPrefab;
+	}
+
+	// ИСПРАВЛЕНО: Считаем общее количество врагов, суммируя count из всех групп
+	public int GetAdjustedEnemyCount(int waveIndex)
+	{
+		var data = GetSafeWaveData(waveIndex);
+		int totalBaseCount = 0;
+
+		if (data.enemyGroups != null)
+		{
+			foreach (var group in data.enemyGroups)
+			{
+				totalBaseCount += group.count;
+			}
+		}
+
+		return Mathf.RoundToInt(totalBaseCount * currentCountMult);
+	}
+
+	public float GetAdjustedSpawnRate(int waveIndex)
+	{
+		return GetSafeWaveData(waveIndex).spawnRate * currentRateMult * currentProfile.baseSpeedMultiplier;
+	}
+
 	// Генерация полного списка врагов для волны с учетом множителя сложности
 	public List<GameObject> GetGeneratedWaveList(int waveIndex)
 	{
 		var data = GetSafeWaveData(waveIndex);
 		List<GameObject> finalEnemies = new List<GameObject>();
 
-		// 1. Наполняем список (как и раньше)
-		foreach (var group in data.enemyGroups)
+		if (data.enemyGroups != null)
 		{
-			// Применяем множитель сложности к количеству
-			int adjustedCount = Mathf.RoundToInt(group.count * currentCountMult);
-
-			for (int i = 0; i < adjustedCount; i++)
+			// 1. Наполняем список
+			foreach (var group in data.enemyGroups)
 			{
-				finalEnemies.Add(group.enemyPrefab);
+				// Применяем множитель сложности к количеству
+				int adjustedCount = Mathf.RoundToInt(group.count * currentCountMult);
+
+				for (int i = 0; i < adjustedCount; i++)
+				{
+					finalEnemies.Add(group.enemyPrefab);
+				}
 			}
 		}
 
 		// 2. ПЕРЕМЕШИВАЕМ СПИСОК (Fisher-Yates Shuffle)
-		// Проходим по списку и меняем каждый элемент со случайным другим
 		for (int i = 0; i < finalEnemies.Count; i++)
 		{
 			GameObject temp = finalEnemies[i];
@@ -58,83 +94,103 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return finalEnemies;
 	}
 
-	public float GetAdjustedSpawnRate(int waveIndex)
-	{
-		var data = GetSafeWaveData(waveIndex);
-		return data.spawnRate * currentRateMult * currentProfile.baseSpeedMultiplier;
-	}
-
 	// --- ГЛАВНЫЙ МОЗГ (МАТЕМАТИКА ХП) ---
 
-	// Подсчет общего ХП волны (Предсказание)
+	// ИСПРАВЛЕНО: Подсчет общего ХП теперь точный, на основе групп
 	private float CalculateTotalWaveHP(int waveIndex)
 	{
 		var data = GetSafeWaveData(waveIndex);
 		float totalHP = 0;
 
-		foreach (var group in data.enemyGroups)
+		if (data.enemyGroups != null)
 		{
-			if (group.enemyPrefab == null) continue;
+			foreach (var group in data.enemyGroups)
+			{
+				if (group.enemyPrefab == null) continue;
 
-			// Получаем ХП одного врага (через GetComponent или Health.maxHitPoint)
-			float singleHP = 0;
-			var healthScript = group.enemyPrefab.GetComponent<Health>();
-			if (healthScript != null)
-				singleHP = healthScript.GetMaxHealth(); // Убедись, что метод есть в Health!
+				// Получаем ХП одного врага
+				float singleEnemyHP = 0;
+				var hpScript = group.enemyPrefab.GetComponent<Health>();
 
-			// Учитываем множитель количества врагов
-			int count = Mathf.RoundToInt(group.count * currentCountMult);
-			totalHP += singleHP * count;
+				// Важно: GiveDamage() обычно наносит урон, но в твоем коде он возвращает hitPoint.
+				// Убедись, что этот метод не "ранит" префаб, а просто возвращает значение.
+				if (hpScript) singleEnemyHP = hpScript.GetMaxHealth();
+
+				// Считаем сколько их будет с учетом множителя
+				int adjustedCount = Mathf.RoundToInt(group.count * currentCountMult);
+
+				// Добавляем к общей сумме
+				totalHP += singleEnemyHP * adjustedCount;
+			}
 		}
+
 		return totalHP;
 	}
 
+	// Потенциал игрока (Сумма DPS всех башен)
+	private float CalculatePlayerPotentialDPS()
+	{
+		float totalPotential = 0f;
+		// FindObjectsByType - это новый метод Unity (быстрее старого FindObjectsOfType)
+		// Если у тебя старая Unity (до 2023), используй FindObjectsOfType<Turret>()
+		Turret[] turrets = FindObjectsByType<Turret>(FindObjectsSortMode.None);
+		foreach (var t in turrets)
+		{
+			totalPotential += t.GetPotentialDPS();
+		}
+		return totalPotential;
+	}
+
+	// --- ЛОГИКА ПРИНЯТИЯ РЕШЕНИЙ ---
+
 	public void EvaluateAndAdjust(int waveJustFinished)
 	{
-		// 1. Считаем, сколько ХП было в прошлой волне
-		float waveTotalHP = CalculateTotalWaveHP(waveJustFinished);
-
-		// 2. Узнаем скорость спавна той волны (сколько длилась волна в идеале)
+		// 1. НОРМА: Какой ДПС нужен был?
+		float waveHP = CalculateTotalWaveHP(waveJustFinished);
 		float spawnRate = GetAdjustedSpawnRate(waveJustFinished);
-		float enemyCount = GetGeneratedWaveList(waveJustFinished).Count;
+		int count = GetAdjustedEnemyCount(waveJustFinished);
 
-		// Время спавна всей волны (секунды) = Кол-во / Скорость
-		float waveDuration = enemyCount / Mathf.Max(spawnRate, 0.1f);
+		// Длительность спавна (идеальная волна)
+		float spawnDuration = count / Mathf.Max(spawnRate, 0.1f);
 
-		// 3. Считаем ТРЕБУЕМЫЙ DPS (Required DPS)
-		// Чтобы убить всех ровно за время их выхода:
-		float requiredDPS = waveTotalHP / Mathf.Max(waveDuration, 1f);
+		// Требуемый ДПС, чтобы убивать в темпе спавна
+		float requiredDPS = waveHP / Mathf.Max(spawnDuration, 0.1f);
 
-		// 4. Узнаем РЕАЛЬНЫЙ DPS игрока (Active Combat DPS)
-		float playerDPS = PerformanceMonitor.instance.GetAverageDPS();
+		// 2. ФАКТ: Как сыграл игрок?
+		PerformanceMonitor.instance.SetSpawnDuration(spawnDuration);
+		float realDPS = PerformanceMonitor.instance.GetRealDPS();
+		int healthLost = PerformanceMonitor.instance.HealthLostInCurrentWave;
 
-		// Защита от нулей
-		if (playerDPS < 1) playerDPS = 1;
+		// 3. ПОТЕНЦИАЛ: Мог ли он сыграть лучше?
+		float potentialDPS = CalculatePlayerPotentialDPS();
 
-		// 5. Сравниваем (Ratio)
-		// Если Required = 100, а Player = 150 -> Ratio = 1.5 (Игрок на 50% сильнее нормы)
-		float performanceRatio = playerDPS / requiredDPS;
+		Debug.Log($"DDA Report: ReqDPS={requiredDPS:F1}, RealDPS={realDPS:F1}, Potential={potentialDPS:F1}, HP Lost={healthLost}");
 
-		// Коррекция на профиль сложности (на Харде мы требуем большего)
-		performanceRatio /= currentProfile.scoreRequirementMultiplier;
+		// --- ПРАВИЛА ---
 
-		Debug.Log($"АНАЛИЗ ВОЛНЫ: TotalHP: {waveTotalHP}, Duration: {waveDuration:F1}s. " +
-				  $"Нужен DPS: {requiredDPS:F1}, У игрока: {playerDPS:F1}. Ratio: {performanceRatio:F2}");
-
-		// 6. Вердикт
-		if (performanceRatio > rules.highPerformanceThreshold)
+		// А. Игрок слишком крут (Реальный ДПС > Требуемого + порог)
+		if (realDPS > requiredDPS * rules.highPerformanceThreshold)
 		{
 			currentCountMult *= rules.enemyCountMultiplier_Harder;
 			currentRateMult *= rules.spawnRateMultiplier_Harder;
 			currentGoldMult *= rules.goldRewardMultiplier_Bonus;
-			Debug.Log(">> СЛИШКОМ ЛЕГКО -> УСЛОЖНЯЕМ!");
+			Debug.Log(">> Игрок доминирует -> Усложняем.");
 		}
-		else if (performanceRatio < rules.lowPerformanceThreshold)
+		// Б. Игрок слаб (Реальный ДПС ниже нормы)
+		else if (realDPS < requiredDPS * rules.lowPerformanceThreshold)
 		{
-			currentCountMult *= rules.enemyCountMultiplier_Easier;
-			currentRateMult *= rules.spawnRateMultiplier_Easier;
-			currentGoldMult = 1.0f;
-			Debug.Log(">> СЛИШКОМ ТЯЖЕЛО -> ОБЛЕГЧАЕМ.");
+			// Проверка 1: Потерял ли он ХП?
+			if (healthLost > 0)
+			{
+				currentCountMult *= rules.enemyCountMultiplier_Easier;
+				currentRateMult *= rules.spawnRateMultiplier_Easier;
+				currentGoldMult = 1.0f;
+				Debug.Log(">> Не хватает мощи и есть потери -> Облегчаем.");
+			}
+			else
+			{
+				Debug.Log(">> ДПС низкий, но потерь нет (Лабиринт/Контроль). Сложность не меняем.");
+			}
 		}
 
 		PerformanceMonitor.instance.ResetWaveStats();

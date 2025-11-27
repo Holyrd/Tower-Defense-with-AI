@@ -14,6 +14,11 @@ public class Bullet : MonoBehaviour
 	private float currentLiveTime;
 	private bool _hasHit = false;
 
+	public int GetDamage()
+	{
+		return damage;
+	}
+
 	public void SetTarget(Transform _target)
 	{
 		target = _target;
@@ -45,6 +50,13 @@ public class Bullet : MonoBehaviour
 
 		// Сразу ставим флаг, блокируя последующие вызовы
 		_hasHit = true;
+
+		// --- НОВАЯ ЛОГИКА: СООБЩАЕМ О ВЫСТРЕЛЕ ---
+		if (PerformanceMonitor.instance != null)
+		{
+			// Передаем урон пули в статистику
+			PerformanceMonitor.instance.RegisterDamage(GetDamage());
+		}
 
 		// Хорошей практикой считается проверка на null (на случай если у объекта нет скрипта Health)
 		if (collision.gameObject.TryGetComponent<Health>(out Health health))

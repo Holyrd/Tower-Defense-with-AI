@@ -47,6 +47,9 @@ public class LevelManager : MonoBehaviour
 
 	public void GetDamage(int _damage)
 	{
+		if (PerformanceMonitor.instance != null)
+			PerformanceMonitor.instance.RegisterHealthLoss(_damage);
+
 		if (_damage >= lives)
 		{
 			lives = 0;

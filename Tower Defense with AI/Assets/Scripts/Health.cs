@@ -8,10 +8,12 @@ public class Health : MonoBehaviour
     [SerializeField] private int currencyForEnemy = 25;
 
     private bool isDestroyd = false;
+	private float spawnTime;
 
 	private void Start()
 	{
-		maxHitPoint = hitPoint; // Запоминаем максимум при старте
+		maxHitPoint = hitPoint;
+		spawnTime = Time.time; // Запоминаем максимум при старте
 	}
 
 	// Метод для Менеджера Сложности
@@ -22,16 +24,15 @@ public class Health : MonoBehaviour
 		return maxHitPoint > 0 ? maxHitPoint : hitPoint;
 	}
 
-
 	public void TakeDamage(int damage)
 	{
-		if (PerformanceMonitor.instance)
-			PerformanceMonitor.instance.RegisterDamage(damage);
-
 		hitPoint -= damage;
 
 		// АГРЕГАЦИЯ: Записываем нанесенный урон
 		StatsManager.main.TrackDamage(damage);
+
+		if (PerformanceMonitor.instance)
+			PerformanceMonitor.instance.RegisterDamage(damage);
 
 		if (hitPoint <= 0 && !isDestroyd)
 		{

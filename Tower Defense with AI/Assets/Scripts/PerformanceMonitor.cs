@@ -4,50 +4,80 @@ public class PerformanceMonitor : MonoBehaviour
 {
 	public static PerformanceMonitor instance;
 
-	// Статистика за текущую волну
+	// --- Статистика за текущую волну ---
 	public float TotalDamageDealt { get; private set; }
+	public int HealthLostInCurrentWave { get; private set; }
 
-	// Чистое время, когда башни реально стреляли и наносили урон
-	private float activeCombatTime = 0f;
-
-	// Время последнего полученного урона
-	private float lastDamageTime = -100f;
-
-	// Окно активности: если урона не было дольше 1 сек, считаем что бой прекратился
-	private const float COMBAT_TIMEOUT = 1.0f;
+	// Тайминги волны
+	private float waveStartTime = -1f;
+	private float waveEndTime = -1f;
+	private bool isWaveActive = false;
+	private float spawnDuration;
 
 	private void Awake() { instance = this; }
 
-	private void Update()
+	// Вызывается Спавнером, когда рождается первый враг
+	public void StartWaveMonitoring()
 	{
-		// Если с момента последнего удара прошло меньше секунды -> считаем это время боевым
-		if (Time.time - lastDamageTime < COMBAT_TIMEOUT)
+		ResetWaveStats();
+		waveStartTime = Time.time;
+		isWaveActive = true;
+	}
+
+	// Вызывается Спавнером, когда все мертвы
+	public void StopWaveMonitoring()
+	{
+		if (isWaveActive)
 		{
-			activeCombatTime += Time.deltaTime;
+			waveEndTime = Time.time;
+			isWaveActive = false;
 		}
 	}
 
 	public void ResetWaveStats()
 	{
 		TotalDamageDealt = 0;
-		activeCombatTime = 0;
-		lastDamageTime = -100f;
+		HealthLostInCurrentWave = 0;
+		waveStartTime = -1f;
+		waveEndTime = -1f;
+		isWaveActive = false;
+		spawnDuration = 0;
 	}
 
+	// --- Сбор данных ---
+
+	// Вызывается из Health.cs (при попадании)
 	public void RegisterDamage(float amount)
 	{
-		// Обновляем метку времени "Мы в бою!"
-		lastDamageTime = Time.time;
-		TotalDamageDealt += amount;
+		if (isWaveActive)
+		{
+			TotalDamageDealt += amount;
+		}
 	}
 
-	// Получить "Честный DPS" (Урон / Время активной стрельбы)
-	public float GetAverageDPS()
+	// Вызывается из LevelManager (при пропуске врага)
+	public void RegisterHealthLoss(int damage)
 	{
-		// Защита: если бой длился 0.1 сек, округлим до 1, чтобы не делить на ноль
-		// и не получать миллиардные значения DPS от одного выстрела
-		float time = Mathf.Max(activeCombatTime, 1f);
+		HealthLostInCurrentWave += damage;
+	}
 
-		return TotalDamageDealt / time;
+	public void SetSpawnDuration(float _spawnDuration)
+	{
+		spawnDuration = _spawnDuration;
+	}
+
+	// --- Расчет Реального ДПС ---
+	public float GetRealDPS()
+	{
+		float endTime = isWaveActive ? Time.time : waveEndTime;
+
+		// Длительность волны
+		float duration = endTime - waveStartTime + spawnDuration;
+
+		// Защита от деления на ноль (если волна длилась 0 сек)
+		if (duration < 1f) duration = 1f;
+
+		// Твоя формула: Урон за волну / Время волны
+		return TotalDamageDealt / duration;
 	}
 }

@@ -61,6 +61,19 @@ public class Turret : MonoBehaviour
 		}
 	}
 
+	public float GetPotentialDPS()
+	{
+		if (bulletPrefab != null)
+		{
+			var bulletScript = bulletPrefab.GetComponent<Bullet>();
+			if (bulletScript != null)
+			{
+				return bulletScript.GetDamage() * bps;
+			}
+		}
+		return 0f;
+	}
+
 	private void Shoot()
 	{
 		GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
