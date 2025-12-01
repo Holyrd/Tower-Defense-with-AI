@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2911444005241972514}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.04, y: 0.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 5203545414290915002}
   - component: {fileID: 7002086438344346412}
   m_Layer: 3
-  m_Name: Turret
+  m_Name: Sniper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +162,7 @@ MonoBehaviour:
   enemyMask:
     serializedVersion: 2
     m_Bits: 64
-  bulletPrefab: {fileID: 1605096730976768045, guid: 2a4c3a0cbb707f0418c9833df64ebeea, type: 3}
+  bulletPrefab: {fileID: 1605096730976768045, guid: e397fda33201d2e4ab61a31df16ffdc7, type: 3}
   firePoint: {fileID: 6709971685750005349}
   upgradeUI: {fileID: 5716752975057518336}
   upgradeButton: {fileID: 6886758502666345335}
@@ -171,18 +171,12 @@ MonoBehaviour:
   turretSprites:
   - {fileID: 3683562740215257751}
   - {fileID: 8377936087741038635}
-  targetingRange: 3
+  targetingRange: 15
   rotationSpeed: 200
-  bps: 1
+  bps: 0.75
   baseDamage: 1
-  upgrades:
-  - price: 100
-    damageBonus: 0
-    rangeBonus: 0
-    bpsBonus: 1
-    newTurretSprites:
-    - {fileID: 8724333274101368715, guid: 394fe1cb50ab94b4580b931482de6213, type: 3}
-    - {fileID: -5078469226964284723, guid: 394fe1cb50ab94b4580b931482de6213, type: 3}
+  baseExplosionRadius: 0
+  upgrades: []
 --- !u!61 &7002086438344346412
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -424,7 +418,7 @@ SpriteRenderer:
   m_SortingLayerID: 702555159
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -8877770845406567853, guid: 4d4b267f0ed84264c8b13ae183d90d47, type: 3}
+  m_Sprite: {fileID: -3302241524066488170, guid: 7bb96ec496fe36a4e8e376728456235f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -716,13 +710,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8610401809272207721}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0.008, y: -0.48, z: 0}
   m_LocalScale: {x: 0.09, y: 0.09, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8439100743150643455}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &8377936087741038635
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -770,7 +764,7 @@ SpriteRenderer:
   m_SortingLayerID: 702555159
   m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: -5151341879966047562, guid: 4d4b267f0ed84264c8b13ae183d90d47, type: 3}
+  m_Sprite: {fileID: -4290623872009084389, guid: 7bb96ec496fe36a4e8e376728456235f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

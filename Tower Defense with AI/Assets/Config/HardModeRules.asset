@@ -19,3 +19,5 @@ MonoBehaviour:
   goldRewardMultiplier_Bonus: 1.1
   enemyCountMultiplier_Easier: 0.95
   spawnRateMultiplier_Easier: 0.95
+  minDifficultyLimit: 0.95
+  maxDifficultyLimit: 2

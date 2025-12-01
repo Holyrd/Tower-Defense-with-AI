@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic; // ОБЯЗАТЕЛЬНО добавить для List<>
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +18,9 @@ public class EnemySpawner : MonoBehaviour
 	private int enemysAlive;
 	private float eps;
 	private int currentWave;
+
+	// НОВОЕ: Список врагов на текущую волну
+	private List<GameObject> currentWaveEnemies;
 
 	// Флаг, чтобы запустить таймер только один раз за волну
 	private bool hasWaveStartedMonitoring = false;
@@ -64,12 +68,25 @@ public class EnemySpawner : MonoBehaviour
 		enemysAlive--;
 	}
 
+	// ИСПРАВЛЕНО: Теперь берем префаб из заранее сгенерированного списка
 	private void SpawnEnemys()
 	{
-		GameObject prefabToSpawn = DynamicDifficultyManager.instance.GetEnemyPrefab(currentWave - 1);
-		if (prefabToSpawn != null)
+		if (currentWaveEnemies == null || currentWaveEnemies.Count == 0) return;
+
+		// Вычисляем индекс: Общее количество - Сколько осталось заспавнить
+		// Например: Всего 10, Осталось 10 -> Индекс 0.
+		//           Всего 10, Осталось 1  -> Индекс 9.
+		int index = currentWaveEnemies.Count - enemysLeftToSpawn;
+
+		// Проверка на всякий случай
+		if (index >= 0 && index < currentWaveEnemies.Count)
 		{
-			Instantiate(prefabToSpawn, LevelManager.main.startPoint.position, Quaternion.identity);
+			GameObject prefabToSpawn = currentWaveEnemies[index];
+
+			if (prefabToSpawn != null)
+			{
+				Instantiate(prefabToSpawn, LevelManager.main.startPoint.position, Quaternion.identity);
+			}
 		}
 	}
 
@@ -104,11 +121,20 @@ public class EnemySpawner : MonoBehaviour
 		// 1. Анализ (передаем индекс прошлой волны)
 		if (currentWave > 1)
 		{
+			// (Тут вызов метода адаптивной сложности, который мы обсуждали ранее)
 			DynamicDifficultyManager.instance.EvaluateAndAdjust(currentWave - 2);
 		}
 
 		int waveIndex = currentWave - 1;
-		enemysLeftToSpawn = DynamicDifficultyManager.instance.GetAdjustedEnemyCount(waveIndex);
+
+		// --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
+		// Получаем готовый, перемешанный список врагов (где точное количество соблюдено)
+		currentWaveEnemies = DynamicDifficultyManager.instance.GetGeneratedWaveList(waveIndex);
+
+		// Ставим количество оставшихся врагов равным длине списка
+		enemysLeftToSpawn = currentWaveEnemies.Count;
+		// -----------------------
+
 		eps = DynamicDifficultyManager.instance.GetAdjustedSpawnRate(waveIndex);
 
 		bool needPathUpdate = (currentWave == 1 || currentWave % 5 == 0);
@@ -118,7 +144,6 @@ public class EnemySpawner : MonoBehaviour
 			Pathfinder.main.useDangerLogic = (currentWave >= 5);
 			Pathfinder.main.UpdateDangerMap();
 			Pathfinder.main.RecalculatePath();
-
 		}
 
 		isSpawning = true;

@@ -9,36 +9,30 @@ public class Plot : MonoBehaviour
 	public GameObject towerObj;
 	public Turret turret;
 	private Color startColor;
-	private Collider2D plotCollider; // Ссылка на коллайдер
+	private Collider2D plotCollider;
 
-	private void Awake() // Используем Awake чтобы найти коллайдер
+	private void Awake()
 	{
 		plotCollider = GetComponent<Collider2D>();
 	}
 
-	public bool HasTower()
-	{
-		return towerObj != null;
-	}
+	// ... (методы HasTower, BecomePath, BecomeBuildable оставляем без изменений) ...
+	public bool HasTower() { return towerObj != null; }
 
 	public void BecomePath()
 	{
-		// Если здесь уже стоит башня - ничего не делаем, это не дорога
 		if (HasTower()) return;
-
 		if (plotCollider != null) plotCollider.enabled = false;
-		sr.color = new Color(0.5f, 0.5f, 0.5f, 0.5f); // Цвет пути
+		sr.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 	}
 
 	public void BecomeBuildable()
 	{
-		// Если здесь стоит башня - не включаем белый цвет и коллайдер, 
-		// чтобы не перекрыть башню
 		if (HasTower()) return;
-
 		if (plotCollider != null) plotCollider.enabled = true;
-		sr.color = Color.clear; // Возвращаем прозрачность
+		sr.color = Color.clear;
 	}
+	// ... (конец блока неизменных методов) ...
 
 	private void Start()
 	{
@@ -49,41 +43,43 @@ public class Plot : MonoBehaviour
 	private void OnMouseEnter()
 	{
 		if (towerObj != null) return;
-
 		sr.color = hoverColor;
 	}
 
 	private void OnMouseExit()
 	{
 		if (towerObj != null) return;
-
 		sr.color = startColor;
 	}
 
 	private void OnMouseDown()
 	{
-		if(UIManager.main.IsHoveringUI()) {return;}
+		if (UIManager.main.IsHoveringUI()) { return; }
 
-		if (towerObj != null)
-		{
-			return;
-		}
+		if (towerObj != null) return;
 
 		Tower towerToBuild = BuildManager.main.GetSelectedTower();
 
+		// 1. Проверяем цену (она будет уже обновленной)
 		if (towerToBuild.cost > LevelManager.main.currency)
 		{
 			Debug.Log("No Money");
 			return;
 		}
 
+		// 2. Тратим деньги
 		LevelManager.main.SpentCurrency(towerToBuild.cost);
 
 		StatsManager.main.TrackMoneySpent(towerToBuild.cost);
 		StatsManager.main.TrackTowerBuilt();
 
+		// 3. Строим
 		towerObj = Instantiate(towerToBuild.prefab, transform.position, Quaternion.identity);
 		sr.color = Color.clear;
+
+		// --- НОВОЕ: Увеличиваем цену этой башни для следующей покупки ---
+		BuildManager.main.IncreaseTowerCost(towerToBuild);
+		// ---------------------------------------------------------------
 
 		Pathfinder.main.ScanGrid();
 

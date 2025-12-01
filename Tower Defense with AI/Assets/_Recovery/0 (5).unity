@@ -3649,9 +3649,8 @@ GameObject:
   - component: {fileID: 325281649}
   - component: {fileID: 325281648}
   - component: {fileID: 325281647}
-  - component: {fileID: 325281650}
   m_Layer: 5
-  m_Name: Snipert Tower
+  m_Name: Smipert Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3728,7 +3727,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3753,7 +3752,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1854562675792104002, guid: 19fceaf268b7cd04aa0f2210eef715fd, type: 3}
+  m_Sprite: {fileID: -5322322488837580080, guid: ac4604d76c8439f4c9e0e70c47b6e563, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3771,20 +3770,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 325281645}
   m_CullTransparentMesh: 1
---- !u!114 &325281650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 325281645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7c0b59e88ea23142844cbe2aa6c9648, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopTowerUI
-  towerIndex: 3
-  costText: {fileID: 1024676851}
 --- !u!1 &342026955
 GameObject:
   m_ObjectHideFlags: 0
@@ -4728,7 +4713,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3354774084431424222, guid: 19fceaf268b7cd04aa0f2210eef715fd, type: 3}
+  m_Sprite: {fileID: -5322322488837580080, guid: ac4604d76c8439f4c9e0e70c47b6e563, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11037,7 +11022,6 @@ GameObject:
   - component: {fileID: 1012050233}
   - component: {fileID: 1012050232}
   - component: {fileID: 1012050231}
-  - component: {fileID: 1012050234}
   m_Layer: 5
   m_Name: Bomb Tower
   m_TagString: Untagged
@@ -11116,7 +11100,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -11159,20 +11143,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1012050229}
   m_CullTransparentMesh: 1
---- !u!114 &1012050234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1012050229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7c0b59e88ea23142844cbe2aa6c9648, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopTowerUI
-  towerIndex: 2
-  costText: {fileID: 2045305642}
 --- !u!1001 &1013905300
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19047,14 +19017,6 @@ MonoBehaviour:
   - name: Freeze Tower
     cost: 200
     prefab: {fileID: 8865474194533529104, guid: 9fa339395fa752a478df4db4053d1262, type: 3}
-    baseCost: 0
-  - name: Bomb Tower
-    cost: 200
-    prefab: {fileID: 5359365068116436566, guid: 7308577d1fb548b47ad8524d26381039, type: 3}
-    baseCost: 0
-  - name: Sniper Tower
-    cost: 250
-    prefab: {fileID: 5359365068116436566, guid: 9c1d4c0847b85a44f9f325101f3640c5, type: 3}
     baseCost: 0
 --- !u!114 &2050933253
 MonoBehaviour:

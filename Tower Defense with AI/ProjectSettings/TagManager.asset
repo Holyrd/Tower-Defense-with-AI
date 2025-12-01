@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MusicSlider
   - MusicButtonImg
+  - Enemy
   layers:
   - Default
   - TransparentFX

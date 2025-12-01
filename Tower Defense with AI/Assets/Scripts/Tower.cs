@@ -8,10 +8,13 @@ public class Tower
 	public int cost;
 	public GameObject prefab;
 
+	[HideInInspector] public int baseCost;
+
 	public Tower (string _name, int _cost, GameObject _prefab)
 	{
 		this.name = _name;
 		this.cost = _cost;
 		this.prefab = _prefab;
+		this.baseCost = _cost;
 	}
 }

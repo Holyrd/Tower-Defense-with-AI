@@ -72,7 +72,7 @@ public class PerformanceMonitor : MonoBehaviour
 		float endTime = isWaveActive ? Time.time : waveEndTime;
 
 		// Длительность волны
-		float duration = endTime - waveStartTime + spawnDuration;
+		float duration = endTime - waveStartTime;
 
 		// Защита от деления на ноль (если волна длилась 0 сек)
 		if (duration < 1f) duration = 1f;

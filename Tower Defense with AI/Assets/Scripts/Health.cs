@@ -1,14 +1,17 @@
+using System;
 using UnityEngine;
 
 public class Health : MonoBehaviour
 {
     [Header("Attributes")]
     [SerializeField] private int hitPoint = 2;
-	[SerializeField] private int maxHitPoint = 2;
     [SerializeField] private int currencyForEnemy = 25;
 
-    private bool isDestroyd = false;
+	public event Action<float> OnHealthChanged;
+
+	private bool isDestroyd = false;
 	private float spawnTime;
+	private int maxHitPoint;
 
 	private void Start()
 	{
@@ -28,11 +31,11 @@ public class Health : MonoBehaviour
 	{
 		hitPoint -= damage;
 
+		float currentPct = (float)hitPoint / maxHitPoint;
+		OnHealthChanged?.Invoke(currentPct);
+
 		// АГРЕГАЦИЯ: Записываем нанесенный урон
 		StatsManager.main.TrackDamage(damage);
-
-		if (PerformanceMonitor.instance)
-			PerformanceMonitor.instance.RegisterDamage(damage);
 
 		if (hitPoint <= 0 && !isDestroyd)
 		{
@@ -53,6 +56,7 @@ public class Health : MonoBehaviour
 
 	public int GiveDamage()
     {
+		LevelManager.main.IncreasCurrency(currencyForEnemy);
         return hitPoint;
     }
 }

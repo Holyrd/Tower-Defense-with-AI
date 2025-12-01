@@ -1,6 +1,7 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq; // Добавлено для удобной работы со списками
+using UnityEngine;
 
 public class DynamicDifficultyManager : MonoBehaviour
 {
@@ -9,33 +10,64 @@ public class DynamicDifficultyManager : MonoBehaviour
 	[Header("Файлы конфигурации")]
 	public WaveConfigSO baseWaves;
 	public AdjustmentRulesSO rules;
-	public DifficultyProfileSO currentProfile;
+
+	[Header("Правила сложности (Перетяни сюда свои ассеты)")]
+	public AdjustmentRulesSO rulesEasy;   // Сюда EasyModeRules
+	public AdjustmentRulesSO rulesNormal; // Сюда StandartRules
+	public AdjustmentRulesSO rulesHard;   // Сюда HardModeRules
 
 	[Header("Баланс (Множители)")]
 	public float currentCountMult = 1.0f;
 	public float currentRateMult = 1.0f;
 	public float currentGoldMult = 1.0f;
 
-	private void Awake() { instance = this; }
+	public enum DDAState { Normal, Hard, Easy }
+	public event Action<DDAState> OnDifficultyChanged;
+
+	private void Awake()
+	{
+		instance = this;
+		LoadDifficultySettings();
+	}
 
 	// --- ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ---
+
+	private void LoadDifficultySettings()
+	{
+		// Получаем сохраненное значение (0=Easy, 1=Normal, 2=Hard). По умолчанию 1 (Normal).
+		int difficultyIndex = PlayerPrefs.GetInt("SelectedDifficulty", 1);
+
+		switch (difficultyIndex)
+		{
+			case 0:
+				rules = rulesEasy;
+				Debug.Log("DDA: Загружены правила ЛЕГКОЙ сложности.");
+				break;
+			case 2:
+				rules = rulesHard;
+				Debug.Log("DDA: Загружены правила ТЯЖЕЛОЙ сложности.");
+				break;
+			case 1:
+			default:
+				rules = rulesNormal;
+				Debug.Log("DDA: Загружены правила НОРМАЛЬНОЙ сложности.");
+				break;
+		}
+
+		// Защита от дурака: если забыл перетянуть файл в инспекторе
+		if (rules == null)
+		{
+			Debug.LogError("ОШИБКА! Не назначены AdjustmentRules в инспекторе! Использую дефолт.");
+			rules = ScriptableObject.CreateInstance<AdjustmentRulesSO>();
+		}
+	}
+
 
 	private WaveConfigSO.WaveData GetSafeWaveData(int waveIndex)
 	{
 		if (baseWaves.waves.Count == 0) return new WaveConfigSO.WaveData();
 		int safeIndex = Mathf.Clamp(waveIndex, 0, baseWaves.waves.Count - 1);
 		return baseWaves.waves[safeIndex];
-	}
-
-	// ИСПРАВЛЕНО: Теперь берет врага из групп, так как массива possibleEnemies больше нет
-	public GameObject GetEnemyPrefab(int waveIndex)
-	{
-		var data = GetSafeWaveData(waveIndex);
-		if (data.enemyGroups == null || data.enemyGroups.Count == 0) return null;
-
-		// Берем случайную группу и возвращаем её префаб
-		var randomGroup = data.enemyGroups[Random.Range(0, data.enemyGroups.Count)];
-		return randomGroup.enemyPrefab;
 	}
 
 	// ИСПРАВЛЕНО: Считаем общее количество врагов, суммируя count из всех групп
@@ -57,7 +89,7 @@ public class DynamicDifficultyManager : MonoBehaviour
 
 	public float GetAdjustedSpawnRate(int waveIndex)
 	{
-		return GetSafeWaveData(waveIndex).spawnRate * currentRateMult * currentProfile.baseSpeedMultiplier;
+		return GetSafeWaveData(waveIndex).spawnRate * currentRateMult;
 	}
 
 	// Генерация полного списка врагов для волны с учетом множителя сложности
@@ -85,7 +117,7 @@ public class DynamicDifficultyManager : MonoBehaviour
 		for (int i = 0; i < finalEnemies.Count; i++)
 		{
 			GameObject temp = finalEnemies[i];
-			int randomIndex = Random.Range(i, finalEnemies.Count);
+			int randomIndex = UnityEngine.Random.Range(i, finalEnemies.Count);
 
 			finalEnemies[i] = finalEnemies[randomIndex];
 			finalEnemies[randomIndex] = temp;
@@ -143,6 +175,16 @@ public class DynamicDifficultyManager : MonoBehaviour
 
 	// --- ЛОГИКА ПРИНЯТИЯ РЕШЕНИЙ ---
 
+	public DDAState GetCurrentState()
+	{
+		// Если множитель заметно больше 1 — это Hard
+		if (currentCountMult > 1.05f) return DDAState.Hard;
+		// Если множитель заметно меньше 1 — это Easy
+		if (currentCountMult < 0.95f) return DDAState.Easy;
+		// Иначе — Норма
+		return DDAState.Normal;
+	}
+
 	public void EvaluateAndAdjust(int waveJustFinished)
 	{
 		// 1. НОРМА: Какой ДПС нужен был?
@@ -151,7 +193,7 @@ public class DynamicDifficultyManager : MonoBehaviour
 		int count = GetAdjustedEnemyCount(waveJustFinished);
 
 		// Длительность спавна (идеальная волна)
-		float spawnDuration = count / Mathf.Max(spawnRate, 0.1f);
+		float spawnDuration = count / Mathf.Max(spawnRate, 0.1f) - 5f;
 
 		// Требуемый ДПС, чтобы убивать в темпе спавна
 		float requiredDPS = waveHP / Mathf.Max(spawnDuration, 0.1f);
@@ -169,29 +211,48 @@ public class DynamicDifficultyManager : MonoBehaviour
 		// --- ПРАВИЛА ---
 
 		// А. Игрок слишком крут (Реальный ДПС > Требуемого + порог)
-		if (realDPS > requiredDPS * rules.highPerformanceThreshold)
+		if (potentialDPS > requiredDPS * rules.highPerformanceThreshold && waveJustFinished > 4)
 		{
-			currentCountMult *= rules.enemyCountMultiplier_Harder;
-			currentRateMult *= rules.spawnRateMultiplier_Harder;
-			currentGoldMult *= rules.goldRewardMultiplier_Bonus;
-			Debug.Log(">> Игрок доминирует -> Усложняем.");
+			if (realDPS >= potentialDPS * 0.6f)
+			{
+				currentCountMult *= rules.enemyCountMultiplier_Harder;
+				currentRateMult *= rules.spawnRateMultiplier_Harder;
+				currentGoldMult *= rules.goldRewardMultiplier_Bonus;
+				Debug.Log(">> Игрок доминирует -> Пробуем усложнить. 1");
+			}
+			else if(realDPS <= potentialDPS * 0.6f && healthLost == 0)
+			{
+				currentCountMult *= rules.enemyCountMultiplier_Harder;
+				currentRateMult *= rules.spawnRateMultiplier_Harder;
+				currentGoldMult *= rules.goldRewardMultiplier_Bonus;
+				Debug.Log(">> Игрок доминирует -> Пробуем усложнить. 2");
+			}
+
 		}
 		// Б. Игрок слаб (Реальный ДПС ниже нормы)
 		else if (realDPS < requiredDPS * rules.lowPerformanceThreshold)
 		{
-			// Проверка 1: Потерял ли он ХП?
 			if (healthLost > 0)
 			{
 				currentCountMult *= rules.enemyCountMultiplier_Easier;
 				currentRateMult *= rules.spawnRateMultiplier_Easier;
+				// Логика сброса золота остается на ваше усмотрение
 				currentGoldMult = 1.0f;
-				Debug.Log(">> Не хватает мощи и есть потери -> Облегчаем.");
+				Debug.Log(">> Не хватает мощи -> Пробуем облегчить.");
 			}
 			else
 			{
-				Debug.Log(">> ДПС низкий, но потерь нет (Лабиринт/Контроль). Сложность не меняем.");
+				Debug.Log(">> ДПС низкий, но потерь нет. Сложность не меняем.");
 			}
 		}
+
+		currentCountMult = Mathf.Clamp(currentCountMult, rules.minDifficultyLimit, rules.maxDifficultyLimit);
+		currentRateMult = Mathf.Clamp(currentRateMult, rules.minDifficultyLimit, rules.maxDifficultyLimit);
+
+		currentGoldMult = Mathf.Clamp(currentGoldMult, 1.0f, 1.2f);
+
+		DDAState newState = GetCurrentState();
+		OnDifficultyChanged?.Invoke(newState);
 
 		PerformanceMonitor.instance.ResetWaveStats();
 	}
