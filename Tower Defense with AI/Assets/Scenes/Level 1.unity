@@ -4625,6 +4625,7 @@ GameObject:
   - component: {fileID: 390544516}
   - component: {fileID: 390544515}
   - component: {fileID: 390544514}
+  - component: {fileID: 390544517}
   m_Layer: 5
   m_Name: Farm
   m_TagString: Untagged
@@ -4703,7 +4704,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4746,6 +4747,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 390544512}
   m_CullTransparentMesh: 1
+--- !u!114 &390544517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 390544512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c0b59e88ea23142844cbe2aa6c9648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopTowerUI
+  towerIndex: 4
+  costText: {fileID: 383752144}
 --- !u!1 &396536191
 GameObject:
   m_ObjectHideFlags: 0
@@ -19055,6 +19070,10 @@ MonoBehaviour:
   - name: Sniper Tower
     cost: 250
     prefab: {fileID: 5359365068116436566, guid: 9c1d4c0847b85a44f9f325101f3640c5, type: 3}
+    baseCost: 0
+  - name: Farm Tower
+    cost: 150
+    prefab: {fileID: 5359365068116436566, guid: 22aa0843b41dadf488de8aab8c1cee65, type: 3}
     baseCost: 0
 --- !u!114 &2050933253
 MonoBehaviour:

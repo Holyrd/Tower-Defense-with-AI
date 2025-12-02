@@ -193,7 +193,7 @@ public class DynamicDifficultyManager : MonoBehaviour
 		int count = GetAdjustedEnemyCount(waveJustFinished);
 
 		// Длительность спавна (идеальная волна)
-		float spawnDuration = count / Mathf.Max(spawnRate, 0.1f) - 5f;
+		float spawnDuration = count / Mathf.Max(spawnRate, 0.1f) - 2f;
 
 		// Требуемый ДПС, чтобы убивать в темпе спавна
 		float requiredDPS = waveHP / Mathf.Max(spawnDuration, 0.1f);

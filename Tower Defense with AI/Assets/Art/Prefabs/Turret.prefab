@@ -175,11 +175,13 @@ MonoBehaviour:
   rotationSpeed: 200
   bps: 1
   baseDamage: 1
+  baseExplosionRadius: 0
   upgrades:
   - price: 100
     damageBonus: 0
     rangeBonus: 0
     bpsBonus: 1
+    explosionRadiusBonus: 0
     newTurretSprites:
     - {fileID: 8724333274101368715, guid: 394fe1cb50ab94b4580b931482de6213, type: 3}
     - {fileID: -5078469226964284723, guid: 394fe1cb50ab94b4580b931482de6213, type: 3}
