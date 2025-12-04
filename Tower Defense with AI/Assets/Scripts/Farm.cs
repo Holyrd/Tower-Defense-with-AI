@@ -9,19 +9,18 @@ public class FarmUpgradeStep
 	public int price;
 
 	[Header("Бонусы")]
-	public int incomeBonus;        // + к добыче за цикл
-	public float speedBonus;       // Уменьшение времени цикла (например, 0.5 = на 0.5 сек быстрее)
+	public int incomeBonus;        
+	public float speedBonus;       
 
 	[Header("Визуал")]
-	public Sprite[] newFarmSprites; // Новые спрайты здания
+	public Sprite[] newFarmSprites; 
 }
 
 public class Farm : MonoBehaviour
 {
 	[Header("References")]
-	// Ссылка на эффект (например, монетка всплывает), если есть
 	[SerializeField] private GameObject incomeEffect;
-	[SerializeField] private Transform incomePoint; // Точка, где появляется эффект
+	[SerializeField] private Transform incomePoint;
 
 	[Header("UI References")]
 	[SerializeField] private GameObject upgradeUI;
@@ -30,16 +29,15 @@ public class Farm : MonoBehaviour
 	[SerializeField] TextMeshProUGUI upgradeInfoText;
 
 	[Header("Visuals")]
-	[SerializeField] private SpriteRenderer[] farmSprites; // Основа и, например, анимация кирки/вентилятора
+	[SerializeField] private SpriteRenderer[] farmSprites; 
 
 	[Header("Base Stats")]
-	[SerializeField] private int baseIncome = 15;      // Сколько дает денег
-	[SerializeField] private float baseCycleTime = 5f; // Как часто (раз в 5 секунд)
+	[SerializeField] private int baseIncome = 15;      
+	[SerializeField] private float baseCycleTime = 5f; 
 
 	[Header("Upgrades")]
 	public FarmUpgradeStep[] upgrades;
 
-	// Внутренние переменные
 	private float timer;
 	private int currentIncome;
 	private float currentCycleTime;
@@ -47,7 +45,6 @@ public class Farm : MonoBehaviour
 
 	private void Start()
 	{
-		// Инициализация статов
 		currentIncome = baseIncome;
 		currentCycleTime = baseCycleTime;
 		timer = currentCycleTime;
@@ -58,7 +55,6 @@ public class Farm : MonoBehaviour
 
 	private void Update()
 	{
-		// Таймер добычи
 		timer -= Time.deltaTime;
 
 		if (timer <= 0f)
@@ -70,23 +66,16 @@ public class Farm : MonoBehaviour
 
 	private void GenerateMoney()
 	{
-		// 1. Даем деньги игроку
 		LevelManager.main.IncreasCurrency(currentIncome);
 
-		// 2. Пишем в статистику
 		if (StatsManager.main != null)
 			StatsManager.main.TrackMoneyEarned(currentIncome);
 
-		// 3. Визуальный эффект (опционально)
 		if (incomeEffect != null && incomePoint != null)
 		{
 			Instantiate(incomeEffect, incomePoint.position, Quaternion.identity);
 		}
-
-		// Можно добавить всплывающий текст "+15$" здесь
 	}
-
-	// --- СИСТЕМА УЛУЧШЕНИЙ (Копия логики из Turret) ---
 
 	private void OnMouseDown()
 	{
@@ -133,22 +122,18 @@ public class Farm : MonoBehaviour
 
 		if (LevelManager.main.currency < step.price)
 		{
-			Debug.Log("Нет денег на улучшение фермы!");
+			Debug.Log("No money to improve the farm!");
 			return;
 		}
 
-		// Тратим деньги
 		LevelManager.main.SpentCurrency(step.price);
 		if (StatsManager.main) StatsManager.main.TrackMoneySpent(step.price);
 
-		// Применяем улучшения
 		currentIncome += step.incomeBonus;
 		currentCycleTime -= step.speedBonus;
 
-		// Защита от слишком быстрой фермы (не меньше 0.5 сек)
 		if (currentCycleTime < 0.5f) currentCycleTime = 0.5f;
 
-		// Обновляем спрайты
 		if (step.newFarmSprites != null && step.newFarmSprites.Length > 0)
 		{
 			for (int i = 0; i < farmSprites.Length; i++)
@@ -162,6 +147,6 @@ public class Farm : MonoBehaviour
 
 		currentLevel++;
 		UpdateUI();
-		Debug.Log($"Ферма улучшена! Доход: {currentIncome}, Время: {currentCycleTime}");
+		Debug.Log($"Farm improved! Income: {currentIncome}, Time: {currentCycleTime}");
 	}
 }

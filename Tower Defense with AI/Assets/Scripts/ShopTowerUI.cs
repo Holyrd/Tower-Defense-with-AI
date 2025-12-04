@@ -1,18 +1,17 @@
 using UnityEngine;
-using TMPro; // Обязательно для TextMeshPro
+using TMPro; 
 
 public class ShopTowerUI : MonoBehaviour
 {
-	[Header("Настройки")]
-	[Tooltip("Индекс башни в массиве BuildManager (0 - первая, 1 - вторая и т.д.)")]
+	[Header("Settings")]
+	[Tooltip("Tower index in BuildManager (0 - first, 1 - second etc.)")]
 	public int towerIndex;
 
-	[Header("UI Компоненты")]
-	public TextMeshProUGUI costText; // Перетяни сюда текст с ценой
+	[Header("UI Components")]
+	public TextMeshProUGUI costText;
 
 	private void Start()
 	{
-		// Обновляем цену при старте игры
 		UpdateCostText();
 		if (BuildManager.main != null)
 			BuildManager.main.OnCostChanged += UpdateCostText;
@@ -25,7 +24,7 @@ public class ShopTowerUI : MonoBehaviour
 		Tower t = BuildManager.main.GetTower(towerIndex);
 		if (t != null)
 		{
-			costText.text = t.cost.ToString(); // Или t.cost + "$"
+			costText.text = t.cost.ToString();
 		}
 	}
 }

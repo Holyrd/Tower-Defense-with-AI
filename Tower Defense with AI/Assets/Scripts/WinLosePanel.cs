@@ -31,7 +31,7 @@ public class WinLosePanel : MonoBehaviour
 
 		var stats = StatsManager.main.currentStats;
 
-		Debug.Log($"Игра окончена! Убито: {stats.enemiesKilled}, Урон: {stats.totalDamageDealt}");
+		Debug.Log($"Game over! Killed: {stats.enemiesKilled}, Damage: {stats.totalDamageDealt}");
 
 		if (isWin)
 		{
@@ -56,7 +56,7 @@ public class WinLosePanel : MonoBehaviour
 		{
 			PlayerPrefs.SetInt("levelReached", currentLevelIndex + 1);
 			PlayerPrefs.Save();
-			Debug.Log("Рівень пройдено! Відкрит рівень: " + (currentLevelIndex + 1));
+			Debug.Log("Level passed! Vidcrit level: " + (currentLevelIndex + 1));
 		}
 	}
 

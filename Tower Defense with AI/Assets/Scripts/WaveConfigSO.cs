@@ -8,15 +8,15 @@ public class WaveConfigSO : ScriptableObject
 	public struct EnemyGroup
 	{
 		public GameObject enemyPrefab;
-		public int count; // Сколько штук этого типа
+		public int count; 
 	}
 
 	[System.Serializable]
 	public struct WaveData
 	{
 		[Header("Настройки состава")]
-		public List<EnemyGroup> enemyGroups; // Список групп (Сначала пойдут эти, потом следующие)
-		public float spawnRate; // Врагов в секунду
+		public List<EnemyGroup> enemyGroups; 
+		public float spawnRate; 
 	}
 
 	public List<WaveData> waves = new List<WaveData>();

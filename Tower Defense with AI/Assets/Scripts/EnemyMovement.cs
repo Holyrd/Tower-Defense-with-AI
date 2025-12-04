@@ -7,34 +7,28 @@ public class EnemyMovement : MonoBehaviour
 	[SerializeField] private Rigidbody2D rb;
 
 	[Header("Attribute")]
-	[SerializeField] private float moveSpeed = 2f; // Увеличил, 0.2 очень мало
+	[SerializeField] private float moveSpeed = 2f; 
 
-	private List<Node> path; // ТЕПЕРЬ ПУТЬ ЭТО СПИСОК УЗЛОВ
+	private List<Node> path; 
 	private int targetIndex = 0;
 	private float baseSpeed;
 
-	// Нам нужна цель (Конец карты). Допустим, она есть в LevelManager
 	private Vector3 endPoint;
 
 	private void Start()
 	{
 		baseSpeed = moveSpeed;
 
-		// 1. Ставим врага точно в точку старта
 		if (Pathfinder.main.startPoint != null)
 			this.transform.position = Pathfinder.main.startPoint.position;
 
-		// 2. Получаем уже готовый путь
 		GetCachedPath();
 	}
 
 	public void GetCachedPath()
 	{
-		// Проверяем, есть ли рассчитанный путь
 		if (Pathfinder.main.currentWavePath != null && Pathfinder.main.currentWavePath.Count > 0)
 		{
-			// ВАЖНО: Создаем новый список на основе старого (копию),
-			// чтобы враги не мешали друг другу
 			path = new List<Node>(Pathfinder.main.currentWavePath);
 			targetIndex = 0;
 		}
@@ -44,7 +38,6 @@ public class EnemyMovement : MonoBehaviour
 	{
 		if (path == null) return;
 
-		// Смотрим на текущую точку пути
 		Vector3 currentWaypoint = path[targetIndex].worldPosition;
 
 		if (Vector2.Distance(transform.position, currentWaypoint) <= 0.1f)
@@ -52,7 +45,6 @@ public class EnemyMovement : MonoBehaviour
 			targetIndex++;
 			if (targetIndex >= path.Count)
 			{
-				// ДОШЛИ ДО КОНЦА
 				EnemySpawner.OnEnemyDestroy.Invoke();
 				LevelManager.main.GetDamage(this.GetComponent<Health>().GiveDamage());
 				Destroy(gameObject);

@@ -4,11 +4,9 @@ public class PerformanceMonitor : MonoBehaviour
 {
 	public static PerformanceMonitor instance;
 
-	// --- Статистика за текущую волну ---
 	public float TotalDamageDealt { get; private set; }
 	public int HealthLostInCurrentWave { get; private set; }
 
-	// Тайминги волны
 	private float waveStartTime = -1f;
 	private float waveEndTime = -1f;
 	private bool isWaveActive = false;
@@ -16,7 +14,6 @@ public class PerformanceMonitor : MonoBehaviour
 
 	private void Awake() { instance = this; }
 
-	// Вызывается Спавнером, когда рождается первый враг
 	public void StartWaveMonitoring()
 	{
 		ResetWaveStats();
@@ -24,7 +21,6 @@ public class PerformanceMonitor : MonoBehaviour
 		isWaveActive = true;
 	}
 
-	// Вызывается Спавнером, когда все мертвы
 	public void StopWaveMonitoring()
 	{
 		if (isWaveActive)
@@ -44,9 +40,6 @@ public class PerformanceMonitor : MonoBehaviour
 		spawnDuration = 0;
 	}
 
-	// --- Сбор данных ---
-
-	// Вызывается из Health.cs (при попадании)
 	public void RegisterDamage(float amount)
 	{
 		if (isWaveActive)
@@ -55,7 +48,6 @@ public class PerformanceMonitor : MonoBehaviour
 		}
 	}
 
-	// Вызывается из LevelManager (при пропуске врага)
 	public void RegisterHealthLoss(int damage)
 	{
 		HealthLostInCurrentWave += damage;
@@ -66,18 +58,14 @@ public class PerformanceMonitor : MonoBehaviour
 		spawnDuration = _spawnDuration;
 	}
 
-	// --- Расчет Реального ДПС ---
 	public float GetRealDPS()
 	{
 		float endTime = isWaveActive ? Time.time : waveEndTime;
 
-		// Длительность волны
 		float duration = endTime - waveStartTime;
 
-		// Защита от деления на ноль (если волна длилась 0 сек)
 		if (duration < 1f) duration = 1f;
 
-		// Твоя формула: Урон за волну / Время волны
 		return TotalDamageDealt / duration;
 	}
 }

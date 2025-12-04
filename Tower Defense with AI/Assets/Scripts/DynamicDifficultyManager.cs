@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Linq; // Добавлено для удобной работы со списками
+using System.Linq;
 using UnityEngine;
 
 public class DynamicDifficultyManager : MonoBehaviour
 {
 	public static DynamicDifficultyManager instance;
 
-	[Header("Файлы конфигурации")]
+	[Header("Config file")]
 	public WaveConfigSO baseWaves;
 	public AdjustmentRulesSO rules;
 
-	[Header("Правила сложности (Перетяни сюда свои ассеты)")]
-	public AdjustmentRulesSO rulesEasy;   // Сюда EasyModeRules
-	public AdjustmentRulesSO rulesNormal; // Сюда StandartRules
-	public AdjustmentRulesSO rulesHard;   // Сюда HardModeRules
+	[Header("Difficulty rule")]
+	public AdjustmentRulesSO rulesEasy;   
+	public AdjustmentRulesSO rulesNormal; 
+	public AdjustmentRulesSO rulesHard;   
 
-	[Header("Баланс (Множители)")]
+	[Header("Balance")]
 	public float currentCountMult = 1.0f;
 	public float currentRateMult = 1.0f;
 	public float currentGoldMult = 1.0f;
@@ -29,8 +29,6 @@ public class DynamicDifficultyManager : MonoBehaviour
 		instance = this;
 		LoadDifficultySettings();
 	}
-
-	// --- ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ---
 
 	private void LoadDifficultySettings()
 	{
@@ -70,7 +68,6 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return baseWaves.waves[safeIndex];
 	}
 
-	// ИСПРАВЛЕНО: Считаем общее количество врагов, суммируя count из всех групп
 	public int GetAdjustedEnemyCount(int waveIndex)
 	{
 		var data = GetSafeWaveData(waveIndex);
@@ -92,7 +89,6 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return GetSafeWaveData(waveIndex).spawnRate * currentRateMult;
 	}
 
-	// Генерация полного списка врагов для волны с учетом множителя сложности
 	public List<GameObject> GetGeneratedWaveList(int waveIndex)
 	{
 		var data = GetSafeWaveData(waveIndex);
@@ -100,10 +96,8 @@ public class DynamicDifficultyManager : MonoBehaviour
 
 		if (data.enemyGroups != null)
 		{
-			// 1. Наполняем список
 			foreach (var group in data.enemyGroups)
 			{
-				// Применяем множитель сложности к количеству
 				int adjustedCount = Mathf.RoundToInt(group.count * currentCountMult);
 
 				for (int i = 0; i < adjustedCount; i++)
@@ -113,7 +107,6 @@ public class DynamicDifficultyManager : MonoBehaviour
 			}
 		}
 
-		// 2. ПЕРЕМЕШИВАЕМ СПИСОК (Fisher-Yates Shuffle)
 		for (int i = 0; i < finalEnemies.Count; i++)
 		{
 			GameObject temp = finalEnemies[i];
@@ -126,9 +119,6 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return finalEnemies;
 	}
 
-	// --- ГЛАВНЫЙ МОЗГ (МАТЕМАТИКА ХП) ---
-
-	// ИСПРАВЛЕНО: Подсчет общего ХП теперь точный, на основе групп
 	private float CalculateTotalWaveHP(int waveIndex)
 	{
 		var data = GetSafeWaveData(waveIndex);
@@ -140,18 +130,13 @@ public class DynamicDifficultyManager : MonoBehaviour
 			{
 				if (group.enemyPrefab == null) continue;
 
-				// Получаем ХП одного врага
 				float singleEnemyHP = 0;
 				var hpScript = group.enemyPrefab.GetComponent<Health>();
 
-				// Важно: GiveDamage() обычно наносит урон, но в твоем коде он возвращает hitPoint.
-				// Убедись, что этот метод не "ранит" префаб, а просто возвращает значение.
 				if (hpScript) singleEnemyHP = hpScript.GetMaxHealth();
 
-				// Считаем сколько их будет с учетом множителя
 				int adjustedCount = Mathf.RoundToInt(group.count * currentCountMult);
 
-				// Добавляем к общей сумме
 				totalHP += singleEnemyHP * adjustedCount;
 			}
 		}
@@ -159,12 +144,10 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return totalHP;
 	}
 
-	// Потенциал игрока (Сумма DPS всех башен)
 	private float CalculatePlayerPotentialDPS()
 	{
 		float totalPotential = 0f;
-		// FindObjectsByType - это новый метод Unity (быстрее старого FindObjectsOfType)
-		// Если у тебя старая Unity (до 2023), используй FindObjectsOfType<Turret>()
+
 		Turret[] turrets = FindObjectsByType<Turret>(FindObjectsSortMode.None);
 		foreach (var t in turrets)
 		{
@@ -173,44 +156,32 @@ public class DynamicDifficultyManager : MonoBehaviour
 		return totalPotential;
 	}
 
-	// --- ЛОГИКА ПРИНЯТИЯ РЕШЕНИЙ ---
-
 	public DDAState GetCurrentState()
 	{
-		// Если множитель заметно больше 1 — это Hard
 		if (currentCountMult > 1.05f) return DDAState.Hard;
-		// Если множитель заметно меньше 1 — это Easy
 		if (currentCountMult < 0.95f) return DDAState.Easy;
-		// Иначе — Норма
+
 		return DDAState.Normal;
 	}
 
 	public void EvaluateAndAdjust(int waveJustFinished)
 	{
-		// 1. НОРМА: Какой ДПС нужен был?
 		float waveHP = CalculateTotalWaveHP(waveJustFinished);
 		float spawnRate = GetAdjustedSpawnRate(waveJustFinished);
 		int count = GetAdjustedEnemyCount(waveJustFinished);
 
-		// Длительность спавна (идеальная волна)
 		float spawnDuration = count / Mathf.Max(spawnRate, 0.1f) - 2f;
 
-		// Требуемый ДПС, чтобы убивать в темпе спавна
 		float requiredDPS = waveHP / Mathf.Max(spawnDuration, 0.1f);
 
-		// 2. ФАКТ: Как сыграл игрок?
 		PerformanceMonitor.instance.SetSpawnDuration(spawnDuration);
 		float realDPS = PerformanceMonitor.instance.GetRealDPS();
 		int healthLost = PerformanceMonitor.instance.HealthLostInCurrentWave;
 
-		// 3. ПОТЕНЦИАЛ: Мог ли он сыграть лучше?
 		float potentialDPS = CalculatePlayerPotentialDPS();
 
 		Debug.Log($"DDA Report: ReqDPS={requiredDPS:F1}, RealDPS={realDPS:F1}, Potential={potentialDPS:F1}, HP Lost={healthLost}");
 
-		// --- ПРАВИЛА ---
-
-		// А. Игрок слишком крут (Реальный ДПС > Требуемого + порог)
 		if (potentialDPS > requiredDPS * rules.highPerformanceThreshold && waveJustFinished > 4)
 		{
 			if (realDPS >= potentialDPS * 0.6f)
@@ -218,31 +189,30 @@ public class DynamicDifficultyManager : MonoBehaviour
 				currentCountMult *= rules.enemyCountMultiplier_Harder;
 				currentRateMult *= rules.spawnRateMultiplier_Harder;
 				currentGoldMult *= rules.goldRewardMultiplier_Bonus;
-				Debug.Log(">> Игрок доминирует -> Пробуем усложнить. 1");
+				Debug.Log(">> Try to improve difficult");
 			}
 			else if(realDPS <= potentialDPS * 0.6f && healthLost == 0)
 			{
 				currentCountMult *= rules.enemyCountMultiplier_Harder;
 				currentRateMult *= rules.spawnRateMultiplier_Harder;
 				currentGoldMult *= rules.goldRewardMultiplier_Bonus;
-				Debug.Log(">> Игрок доминирует -> Пробуем усложнить. 2");
+				Debug.Log(">> Try to improve difficult");
 			}
 
 		}
-		// Б. Игрок слаб (Реальный ДПС ниже нормы)
+
 		else if (realDPS < requiredDPS * rules.lowPerformanceThreshold)
 		{
 			if (healthLost > 0)
 			{
 				currentCountMult *= rules.enemyCountMultiplier_Easier;
 				currentRateMult *= rules.spawnRateMultiplier_Easier;
-				// Логика сброса золота остается на ваше усмотрение
 				currentGoldMult = 1.0f;
-				Debug.Log(">> Не хватает мощи -> Пробуем облегчить.");
+				Debug.Log(">> Try to decries difficult");
 			}
 			else
 			{
-				Debug.Log(">> ДПС низкий, но потерь нет. Сложность не меняем.");
+				Debug.Log(">> Low DPS. But not HP lost");
 			}
 		}
 

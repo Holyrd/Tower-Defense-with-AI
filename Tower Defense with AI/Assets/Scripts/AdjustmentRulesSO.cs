@@ -3,23 +3,23 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AdjustmentRules", menuName = "DDA/Adjustment Rules")]
 public class AdjustmentRulesSO : ScriptableObject
 {
-	[Header("Пороги успеха (1.0 = норма)")]
-	public float highPerformanceThreshold = 1.2f; // Игрок на 20% эффективнее нормы
-	public float lowPerformanceThreshold = 0.8f;  // Игрок на 20% слабее нормы
+	[Header("Success thresholds (1.0 = normal)")]
+	public float highPerformanceThreshold = 1.2f; 
+	public float lowPerformanceThreshold = 0.8f;  
 
-	[Header("Реакция на Успех (Усложнение)")]
-	public float enemyCountMultiplier_Harder = 1.1f; // +10% врагов
-	public float spawnRateMultiplier_Harder = 1.1f;  // +10% скорости спавна
-	public float goldRewardMultiplier_Bonus = 1.2f;  // +20% денег (Поощрение!)
+	[Header("Reaction to Success (Complication)")]
+	public float enemyCountMultiplier_Harder = 1.1f; 
+	public float spawnRateMultiplier_Harder = 1.1f;  
+	public float goldRewardMultiplier_Bonus = 1.2f;  
 
-	[Header("Реакция на Провал (Облегчение)")]
-	public float enemyCountMultiplier_Easier = 0.9f; // -10% врагов
-	public float spawnRateMultiplier_Easier = 0.9f;  // -10% скорости
+	[Header("Reaction to Failure (Relief)")]
+	public float enemyCountMultiplier_Easier = 0.9f; 
+	public float spawnRateMultiplier_Easier = 0.9f;  
 
-	[Header("Границы сложности")]
-	[Tooltip("Минимально возможный множитель (например, 0.8 = сложность не упадет ниже 80%)")]
+	[Header("Difficulty limits")]
+	[Tooltip("Minimum possible multiplier (eg 0.8 = difficulty will not drop below 80%)")]
 	public float minDifficultyLimit = 0.8f;
 
-	[Tooltip("Максимально возможный множитель (например, 1.2 = сложность не вырастет выше 120%)")]
+	[Tooltip("Maximum possible multiplier (e.g. 1.2 = difficulty will not increase above 120%)")]
 	public float maxDifficultyLimit = 1.2f;
 }

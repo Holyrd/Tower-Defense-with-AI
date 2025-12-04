@@ -1,5 +1,5 @@
 using UnityEngine;
-using System; // НУЖНО для Action
+using System; 
 
 public class BuildManager : MonoBehaviour
 {
@@ -8,9 +8,7 @@ public class BuildManager : MonoBehaviour
 	[Header("References")]
 	[SerializeField] private Tower[] towers;
 
-	// --- НОВОЕ: Событие изменения цены ---
 	public event Action OnCostChanged;
-	// ------------------------------------
 
 	private int selectedTower = 0;
 
@@ -28,7 +26,6 @@ public class BuildManager : MonoBehaviour
 		return towers[selectedTower];
 	}
 
-	// --- НОВОЕ: Метод чтобы UI мог узнать информацию о любой башне по индексу ---
 	public Tower GetTower(int index)
 	{
 		if (index < 0 || index >= towers.Length) return null;
@@ -48,8 +45,7 @@ public class BuildManager : MonoBehaviour
 		{
 			towerToAdjust.cost = 500;
 		}
-		// --- НОВОЕ: Сообщаем всем подписчикам, что цены изменились ---
+
 		OnCostChanged?.Invoke();
-		// -----------------------------------------------------------
 	}
 }

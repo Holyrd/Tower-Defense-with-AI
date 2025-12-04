@@ -3,29 +3,26 @@ using UnityEngine.UI;
 
 public class DifficultyIndicator : MonoBehaviour
 {
-	[Header("Компоненты")]
-	public Image statusImage; // Сюда перетяни компонент Image с этого же объекта
+	[Header("Componet")]
+	public Image statusImage; 
 
-	[Header("Спрайты состояний")]
-	public Sprite iconNormal; // Серая полоска
-	public Sprite iconHard;   // Зеленая стрелка ВВЕРХ (Игрок крут -> сложность растет)
-	public Sprite iconEasy;   // Красная стрелка ВНИЗ (Игрок слаб -> сложность падает)
+	[Header("Status Sprites")]
+	public Sprite iconNormal; 
+	public Sprite iconHard;   
+	public Sprite iconEasy;   
 
 	private void Start()
 	{
-		// Подписываемся на события менеджера
 		if (DynamicDifficultyManager.instance != null)
 		{
 			DynamicDifficultyManager.instance.OnDifficultyChanged += UpdateVisuals;
 
-			// Сразу обновляем картинку при старте (вдруг мы загрузили игру где уже сложно)
 			UpdateVisuals(DynamicDifficultyManager.instance.GetCurrentState());
 		}
 	}
 
 	private void OnDestroy()
 	{
-		// Обязательно отписываемся, чтобы не было ошибок при перезагрузке сцены
 		if (DynamicDifficultyManager.instance != null)
 		{
 			DynamicDifficultyManager.instance.OnDifficultyChanged -= UpdateVisuals;
@@ -38,7 +35,7 @@ public class DifficultyIndicator : MonoBehaviour
 		{
 			case DynamicDifficultyManager.DDAState.Hard:
 				if (iconHard) statusImage.sprite = iconHard;
-				statusImage.color = Color.white; // Можно менять цвет кодом, если нет спрайтов
+				statusImage.color = Color.white; 
 				break;
 
 			case DynamicDifficultyManager.DDAState.Easy:

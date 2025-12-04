@@ -3,16 +3,16 @@ using UnityEngine;
 [System.Serializable]
 public class Node
 {
-	public bool isWalkable;      // Можно ли здесь ходить
+	public bool isWalkable;      
 	public Vector3 worldPosition;
 	public int gridX;
 	public int gridY;
 
-	public int gCost;            // Стоимость от старта
-	public int hCost;            // Стоимость до конца
-	public int movementPenalty;  // ШТРАФ (Опасность от башен)
+	public int gCost;            
+	public int hCost;           
+	public int movementPenalty;  
 
-	public Node parent;          // Откуда мы пришли в эту клетку
+	public Node parent;          
 
 	public Node(bool _walkable, Vector3 _worldPos, int _gridX, int _gridY)
 	{
